@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
 <title>JARVIS Student Income</title>
+  <link rel="manifest" href="./manifest.json">
 <style>
 :root{color-scheme:dark;--bg:#07111f;--panel:#111f32;--accent:#39d9ff;--muted:#9cb1c8}
 *{box-sizing:border-box}
@@ -113,5 +114,16 @@ function voice(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition
 function saveNote(){put('j_note',document.getElementById('note').value);document.getElementById('notesaved').textContent='Goal saved on this device.'}
 document.getElementById('note').value=get('j_note','');document.getElementById('greeting').textContent='System ready • '+new Date().toLocaleDateString('en-ZA');render();
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(function (error) {
+        console.error('JARVIS service worker error:', error);
+      });
+  });
+}
+</script>
+
 </body>
 </html>
