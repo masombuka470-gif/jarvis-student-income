@@ -1,0 +1,7 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#07111f"/>
+  <circle cx="256" cy="220" r="130" fill="none" stroke="#39d9ff" stroke-width="18"/>
+  <path d="M190 220 L235 265 L330 165" fill="none" stroke="#39d9ff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="256" y="410" font-size="78" font-family="Arial,sans-serif" font-weight="bold" fill="#39d9ff" text-anchor="middle">J.A.R.V.I.S.</text>
+</svg>
