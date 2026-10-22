@@ -7,7 +7,73 @@
 <meta name="theme-color" content="#07111f">
 <title>JARVIS Student Income</title>
   <link rel="manifest" href="./manifest.json">
-<style>
+
+/* JARVIS FUTURISTIC THEME */
+:root {
+  color-scheme: dark;
+  --jarvis-blue: #00d9ff;
+  --jarvis-glow: rgba(0, 217, 255, 0.22);
+  --jarvis-bg: #050a12;
+  --jarvis-panel: #0b1523;
+}
+
+html {
+  background: var(--jarvis-bg);
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 50% 0%, #102b43 0%, transparent 55%),
+    var(--jarvis-bg);
+  color: #e3faff;
+  font-family: system-ui, sans-serif;
+}
+
+h1, h2, h3 {
+  color: var(--jarvis-blue);
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 12px var(--jarvis-glow);
+}
+
+button {
+  border: 1px solid var(--jarvis-blue);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #102b43, #07111e);
+  color: #e3faff;
+  padding: 11px 16px;
+  box-shadow: 0 0 12px var(--jarvis-glow);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+button:active {
+  background: #12415a;
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+}
+
+input, textarea, select {
+  background: #07111e;
+  color: #e3faff;
+  border: 1px solid #17617a;
+  border-radius: 8px;
+  padding: 10px;
+  max-width: 100%;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: 1px solid var(--jarvis-blue);
+  box-shadow: 0 0 10px var(--jarvis-glow);
+}
+
+.card, .panel, .dashboard-card, section {
+  border-color: rgba(0, 217, 255, 0.25);
+}
+
+::selection {
+  background: #00d9ff;
+  color: #050a12;
+}
+
+  <style>
 :root{color-scheme:dark;--bg:#07111f;--panel:#111f32;--accent:#39d9ff;--muted:#9cb1c8}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:#f4f8ff;font:16px system-ui,sans-serif}
