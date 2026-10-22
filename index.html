@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>JARVIS Student Income</title>
+<style>
+:root{color-scheme:dark;--bg:#07111f;--panel:#111f32;--accent:#39d9ff;--muted:#9cb1c8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#f4f8ff;font:16px system-ui,sans-serif}
+header{padding:24px 18px;background:linear-gradient(135deg,#102944,#07111f);border-bottom:1px solid #24435b}
+h1{margin:0;color:var(--accent);letter-spacing:2px}
+header p,.muted{color:var(--muted)}
+main{padding:16px;max-width:720px;margin:auto}
+nav{display:flex;gap:8px;overflow:auto;padding:12px 0}
+button{background:#16324a;color:white;border:1px solid #31516b;border-radius:10px;padding:11px 13px;font-weight:600}
+button.primary{background:var(--accent);color:#04111c;border:0}
+nav button{white-space:nowrap}
+.card{background:var(--panel);border:1px solid #263c52;border-radius:16px;padding:16px;margin:12px 0}
+.stat{font-size:28px;color:var(--accent);font-weight:700}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 12px;border-radius:9px;border:1px solid #38536b;background:#081522;color:white;font:inherit}
+label{display:block;color:#c7d7e8}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+section[hidden]{display:none}
+.item{border-top:1px solid #2c4156;padding:10px 0;overflow-wrap:anywhere}
+.small{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+<div class="small">PERSONAL AI • STUDENT EDITION</div>
+<h1>J.A.R.V.I.S.</h1>
+<p>Your student income command centre</p>
+<div id="greeting">Ready when you are.</div>
+</header>
+<main>
+<nav>
+<button onclick="show('home')">Dashboard</button>
+<button onclick="show('income')">Income</button>
+<button onclick="show('leads')">Leads</button>
+<button onclick="show('sales')">Sales writer</button>
+<button onclick="show('assistant')">Assistant</button>
+</nav>
+
+<section id="home">
+<div class="card"><div class="muted">Total income recorded (ZAR)</div><div class="stat" id="total">R0.00</div></div>
+<div class="row">
+<div class="card"><div class="muted">Income entries</div><div class="stat" id="count">0</div></div>
+<div class="card"><div class="muted">Saved leads</div><div class="stat" id="leadcount">0</div></div>
+</div>
+<div class="card"><h3>Today's mission</h3><p>Find one potential customer, send a helpful message, and record your progress.</p><button class="primary" onclick="show('leads')">Track a lead</button></div>
+<div class="card"><h3>Quick note</h3><textarea id="note" placeholder="Write today's goal..."></textarea><button onclick="saveNote()">Save goal</button><p id="notesaved" class="small"></p></div>
+</section>
+
+<section id="income" hidden>
+<div class="card"><h2>Record income</h2>
+<label>Amount (R)</label><input id="amount" type="number" min="0.01" step="0.01" placeholder="e.g. 50">
+<label>Source</label><input id="source" placeholder="e.g. Tutoring">
+<button class="primary" onclick="addIncome()">Save income</button>
+<h3>History</h3><div id="incomeList"></div></div>
+</section>
+
+<section id="leads" hidden>
+<div class="card"><h2>Lead tracker</h2>
+<label>Customer name</label><input id="leadname" placeholder="Name or business">
+<label>Contact (optional)</label><input id="contact" placeholder="Contact details">
+<label>Potential sale (R)</label><input id="leadvalue" type="number" min="0" placeholder="0">
+<label>Status</label><select id="leadstatus"><option>New</option><option>Contacted</option><option>Interested</option><option>Won</option><option>Lost</option></select>
+<button class="primary" onclick="addLead()">Save lead</button>
+<div id="leadList"></div></div>
+</section>
+
+<section id="sales" hidden>
+<div class="card"><h2>Sales message writer</h2>
+<label>What are you offering?</label><input id="offer" placeholder="e.g. Maths tutoring">
+<label>Customer name (optional)</label><input id="customer" placeholder="e.g. Thabo">
+<label>Style</label><select id="tone"><option>Friendly</option><option>Professional</option><option>Short and casual</option></select>
+<button class="primary" onclick="makeMessage()">Generate message</button>
+<textarea id="message" rows="6" placeholder="Your message will appear here"></textarea>
+<button onclick="copyMessage()">Copy message</button></div>
+</section>
+
+<section id="assistant" hidden>
+<div class="card"><h2>JARVIS assistant</h2>
+<p class="muted">Try typing a question or using voice input if supported by your browser.</p>
+<textarea id="question" rows="3" placeholder="e.g. Give me three ways to earn money with no capital"></textarea>
+<div class="row"><button class="primary" onclick="ask()">Ask JARVIS</button><button onclick="voice()">🎙 Speak</button></div>
+<div id="answer" aria-live="polite"></div>
+<p class="small">This prototype uses built-in responses, not a connected online AI. Never enter passwords or banking PINs.</p>
+</div>
+</section>
+</main>
+<script>
+const get=(k,d=[])=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const put=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let incomes=get('j_income'),leads=get('j_leads');
+function show(id){document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!==id);if(id==='home')render();if(id==='income')renderIncome();if(id==='leads')renderLeads();window.scrollTo(0,0)}
+function money(n){return 'R'+Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function render(){document.getElementById('total').textContent=money(incomes.reduce((s,x)=>s+Number(x.amount),0));document.getElementById('count').textContent=incomes.length;document.getElementById('leadcount').textContent=leads.length}
+function addIncome(){let amount=Number(document.getElementById('amount').value),source=document.getElementById('source').value.trim();if(amount<=0||!source)return alert('Enter a positive amount and its source.');incomes.unshift({amount,source,date:new Date().toLocaleDateString()});put('j_income',incomes);document.getElementById('amount').value='';document.getElementById('source').value='';renderIncome();render()}
+function renderIncome(){document.getElementById('incomeList').innerHTML=incomes.map(x=>`<div class="item"><b>${money(x.amount)}</b> — ${safe(x.source)}<div class="small">${safe(x.date)}</div></div>`).join('')||'<p class="muted">No income recorded yet.</p>'}
+function addLead(){let name=document.getElementById('leadname').value.trim();if(!name)return alert('Enter a customer name or business.');leads.unshift({name,contact:document.getElementById('contact').value.trim(),value:Number(document.getElementById('leadvalue').value)||0,status:document.getElementById('leadstatus').value});put('j_leads',leads);['leadname','contact','leadvalue'].forEach(id=>document.getElementById(id).value='');renderLeads();render()}
+function renderLeads(){document.getElementById('leadList').innerHTML=leads.map((x,i)=>`<div class="item"><b>${safe(x.name)}</b> — ${safe(x.status)}<div>${money(x.value)} potential</div><div class="small">${safe(x.contact)}</div><button onclick="cycleLead(${i})">Update status</button> <button onclick="deleteLead(${i})">Delete</button></div>`).join('')||'<p class="muted">No leads saved yet.</p>'}
+function cycleLead(i){let states=['New','Contacted','Interested','Won','Lost'];leads[i].status=states[(states.indexOf(leads[i].status)+1)%states.length];put('j_leads',leads);renderLeads()}
+function deleteLead(i){if(confirm('Delete this lead?')){leads.splice(i,1);put('j_leads',leads);renderLeads();render()}}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function makeMessage(){let offer=document.getElementById('offer').value.trim(),name=document.getElementById('customer').value.trim()||'there',tone=document.getElementById('tone').value;if(!offer)return alert('Enter what you are offering.');let intro=tone==='Professional'?'Good day':'Hi';let msg=`${intro} ${name}! ${tone==='Short and casual'?'I’m offering':'I’m reaching out because I’m offering'} ${offer}. ${tone==='Professional'?'Please let me know if you would like more information.':'Would you be interested in learning more?'} No pressure at all. Thank you!`;document.getElementById('message').value=msg}
+async function copyMessage(){let t=document.getElementById('message').value;if(!t)return alert('Generate a message first.');try{await navigator.clipboard.writeText(t);alert('Message copied.')}catch{document.getElementById('message').select();alert('Select the text and copy it.')}}
+function ask(){let q=document.getElementById('question').value.trim().toLowerCase();let a='Start with a skill you already have, offer a small service, contact potential customers respectfully, and track every result. Avoid jobs that demand upfront fees.';if(!q)return alert('Type a question first.');if(q.includes('income')||q.includes('money')||q.includes('earn'))a='Three low-cost ideas: (1) tutor a subject you know, (2) create CVs or posters using free tools, (3) help local businesses write product descriptions or social posts. Ask customers what they need before spending money.';else if(q.includes('lead')||q.includes('customer'))a='Choose a relevant customer, personalise your message, explain one clear benefit, ask a simple question, and follow up politely once. Record the result in Leads.';else if(q.includes('plan')||q.includes('today'))a='Today: choose one service, write one sample, identify five potential customers, send three personalised messages, then record responses and income.';document.getElementById('answer').textContent=a}
+function voice(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Voice input is not supported in this browser. Try Chrome, or use text input.');return}let r=new SR();r.lang='en-ZA';r.onresult=e=>{document.getElementById('question').value=e.results[0][0].transcript;ask()};r.onerror=()=>alert('Voice input failed. Please type your question instead.');r.start()}
+function saveNote(){put('j_note',document.getElementById('note').value);document.getElementById('notesaved').textContent='Goal saved on this device.'}
+document.getElementById('note').value=get('j_note','');document.getElementById('greeting').textContent='System ready • '+new Date().toLocaleDateString('en-ZA');render();
+</script>
+</body>
+</html>
