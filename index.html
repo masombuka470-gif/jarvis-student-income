@@ -93,6 +93,133 @@ label{display:block;color:#c7d7e8}
 section[hidden]{display:none}
 .item{border-top:1px solid #2c4156;padding:10px 0;overflow-wrap:anywhere}
 .small{font-size:13px;color:var(--muted)}
+    
+/* JARVIS INCOME DASHBOARD */
+.jarvis-money {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 18px;
+  box-sizing: border-box;
+  color: #e8faff;
+  background: #06101f;
+  border: 1px solid #164968;
+  border-radius: 18px;
+  font-family: Arial, sans-serif;
+}
+
+.jarvis-money * {
+  box-sizing: border-box;
+}
+
+.jarvis-money .jm-heading {
+  color: #50e6ff;
+  font-size: 25px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin: 0 0 8px;
+}
+
+.jarvis-money .jm-subtitle {
+  color: #91afc9;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.jarvis-money .jm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.jarvis-money .jm-card {
+  min-width: 0;
+  padding: 15px;
+  background: #0b1d31;
+  border: 1px solid #164968;
+  border-radius: 12px;
+}
+
+.jarvis-money .jm-label {
+  color: #9cb8d0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.jarvis-money .jm-value {
+  color: #ffffff;
+  font-size: clamp(18px, 5vw, 27px);
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.jarvis-money .jm-accent {
+  color: #50e6ff;
+}
+
+.jarvis-money .jm-section {
+  margin-top: 22px;
+  padding-top: 17px;
+  border-top: 1px solid #164968;
+}
+
+.jarvis-money .jm-section h3 {
+  color: #50e6ff;
+  font-size: 16px;
+  margin: 0 0 14px;
+}
+
+.jarvis-money .jm-field {
+  display: block;
+  width: 100%;
+  margin: 8px 0 13px;
+  padding: 12px;
+  border: 1px solid #24536f;
+  border-radius: 9px;
+  background: #071426;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.jarvis-money .jm-button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border: 1px solid #50e6ff;
+  border-radius: 9px;
+  background: #10374a;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.jarvis-money .jm-button:active {
+  background: #18566c;
+}
+
+.jarvis-money .jm-note {
+  color: #91afc9;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+@media (max-width: 360px) {
+  .jarvis-money {
+    padding: 12px;
+  }
+
+  .jarvis-money .jm-grid {
+    gap: 8px;
+  }
+
+  .jarvis-money .jm-card {
+    padding: 10px;
+  }
+}
+ 
 </style>
 </head>
 <body>
