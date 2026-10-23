@@ -426,5 +426,157 @@ if ('serviceWorker' in navigator) {
 </section>
 <!-- END JARVIS INCOME DASHBOARD -->
 
+<script>
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "jarvis_income_transactions_v1";
+
+  const $ = (id) => document.getElementById(id);
+
+  const form = $("jm-form");
+
+  // Do not run if the dashboard HTML is missing.
+  if (!form || !$("jm-revenue") || !$("jm-transactions")) {
+    console.warn("JARVIS dashboard elements not found.");
+    return;
+  }
+
+  const money = (amount) =>
+    new Intl.NumberFormat("en-ZA", {
+      style: "currency",
+      currency: "ZAR"
+    }).format(amount);
+
+  let transactions = [];
+
+  // Load saved transactions safely.
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const parsed = saved ? JSON.parse(saved) : [];
+
+    if (Array.isArray(parsed)) {
+      transactions = parsed.filter((t) =>
+        t &&
+        (t.type === "income" || t.type === "expense") &&
+        Number.isFinite(t.amount) &&
+        t.amount > 0 &&
+        typeof t.description === "string" &&
+        typeof t.date === "string"
+      );
+    }
+  } catch (error) {
+    console.error("Could not load JARVIS transactions:", error);
+  }
+
+  function render() {
+    let revenue = 0;
+    let expenses = 0;
+
+    transactions.forEach((t) => {
+      if (t.type === "income") {
+        revenue += t.amount;
+      } else {
+        expenses += t.amount;
+      }
+    });
+
+    const profit = revenue - expenses;
+    const rate = Number($("jm-rate").value) / 100;
+
+    // Only allocate from positive profit.
+    const reinvestment = Math.max(0, profit) * rate;
+    const available = profit - reinvestment;
+
+    $("jm-revenue").textContent = money(revenue);
+    $("jm-expenses").textContent = money(expenses);
+    $("jm-profit").textContent = money(profit);
+    $("jm-investment").textContent = money(reinvestment);
+    $("jm-available").textContent = money(available);
+
+    // Build the transaction list without inserting user text as HTML.
+    const list = $("jm-transactions");
+    list.replaceChildren();
+
+    if (transactions.length === 0) {
+      list.textContent = "No transactions recorded yet.";
+      return;
+    }
+
+    transactions.slice().reverse().forEach((t) => {
+      const row = document.createElement("div");
+      row.style.cssText =
+        "padding:10px 0;border-bottom:1px solid #164968;";
+
+      const title = document.createElement("div");
+      title.textContent = t.description;
+
+      const detail = document.createElement("div");
+      detail.style.color =
+        t.type === "income" ? "#50e6c0" : "#ff8b8b";
+
+      detail.textContent =
+        (t.type === "income" ? "+ " : "- ") +
+        money(t.amount) + " · " +
+        new Date(t.date).toLocaleString("en-ZA");
+
+      row.append(title, detail);
+      list.appendChild(row);
+    });
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const type = $("jm-type").value;
+    const amount = Number($("jm-amount").value);
+    const description = $("jm-description").value.trim();
+
+    if (
+      !["income", "expense"].includes(type) ||
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      !description
+    ) {
+      alert("Enter a valid transaction type, amount and description.");
+      return;
+    }
+
+    const transaction = {
+      type: type,
+      amount: Math.round(amount * 100) / 100,
+      description: description,
+      date: new Date().toISOString()
+    };
+
+    // Save before updating the display.
+    try {
+      transactions.push(transaction);
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(transactions)
+      );
+    } catch (error) {
+      transactions.pop();
+      alert(
+        "JARVIS could not save this transaction. " +
+        "Check browser storage and try again."
+      );
+      console.error("JARVIS save failed:", error);
+      return;
+    }
+
+    form.reset();
+    render();
+    alert("Transaction saved on this device.");
+  });
+
+  $("jm-rate").addEventListener("change", render);
+
+  render();
+})();
+</script>
+
 </body>
 </html>
